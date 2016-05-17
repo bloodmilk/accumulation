@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>耗时函数被短时间频繁调用-每一次</title>
+</head>
+<body>
+	<script src="jquery-1.10.2.min.js"></script>
+	<script>
+	$(function(){
+		function queueCall(fn, time) {
+			time = time || 200;
+			var argsArr = [];
+			setInterval(function (){
+				if (argsArr.length === 0) {
+					return;
+				};
+				var args = argsArr.shift();
+				fn.apply(fn, args);
+			}, time);
+			return function() {
+				argsArr.push(arguments);
+			}
+		}
+		var signIn = function(name) {
+			console.log("sign in name:" + name);
+		}
+		var arr = ["joel", "jack", "tom", "jerry", "jim"];
+		
+		arr.forEach(function(name) {
+			signIn(name);
+		})
+	});
+	</script>
+</body>
+</html>

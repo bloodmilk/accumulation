@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>耗时函数被短时间频繁调用-取最后一次</title>
+</head>
+<body>
+	<input type="text" id="input">
+	<script src="jquery-1.10.2.min.js"></script>
+	<script>
+	$(function(){
+		function throttle(fn, time) {
+			time = time || 200;
+			var runId = null;
+			return function() {
+				var args = arguments;
+				clearTimeout(runId);//把之前没执行的给去掉
+				runId = setTimeout(function() {
+					fn.apply(fn, args);
+				}, time);
+			}
+		}
+		var search = function(val) {
+			$.ajax({
+				url: "error" //404的地址, 为了让代码进入fail方法
+			}).fail(function() {
+				console.log(val);
+			})
+		}
+		search = throttle(search, 500);
+		$("#input").keyup(function() {
+			search($(this).val());
+		})
+	});
+	</script>
+</body>
+</html>
